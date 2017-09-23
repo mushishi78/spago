@@ -14,3 +14,20 @@ that allow changes made in the browser to be persisted directly to disk.
 
 It's also fairly fast and responsive to changes.
 
+## Install
+
+Download the release for you platform from the [release page](https://github.com/mushishi78/spago/releases).
+Put in a folder in your PATH and rename to `spago`.
+
+## Build
+
+To build from source, you will need to [install go](https://golang.org/doc/install).
+Then use the `get` tool to download source in to your GOPATH.
+
+```
+go get -u github.com/mushishi78/spago
+``
+
+This will also build and install it into you go `bin` directory. To update with
+changes made to the source, navigate to the project folder in your GOPATH and use
+`go install`.
