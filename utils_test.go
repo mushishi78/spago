@@ -1,9 +1,6 @@
 package main
 
 import (
-	"bytes"
-	"crypto/md5"
-	"encoding/hex"
 	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
@@ -39,34 +36,6 @@ func tAddFile(t *testing.T, filename string, content string) {
 	if err != nil {
 		t.Fatalf("failed to add file\n%v", err)
 	}
-}
-
-func tRemoveFile(t *testing.T, filename string) {
-	err := os.Remove(filename)
-	if err != nil {
-		t.Fatalf("failed to remove file\n%v", err)
-	}
-}
-
-func tFileEql(t *testing.T, filename string, expected string) {
-	if _, err := os.Stat(filename); os.IsNotExist(err) {
-		t.Errorf("expected file %v to exist", filename)
-		return
-	}
-
-	actual, err := ioutil.ReadFile(filename)
-	if err != nil {
-		t.Fatalf("failed to read output file\n%v", err)
-	}
-
-	if !bytes.Equal(actual, []byte(expected)) {
-		t.Errorf("expected file %v content %v to be equal to %v", filename, actual, expected)
-	}
-}
-
-func tHash(str string) string {
-	array := md5.Sum([]byte(str))
-	return hex.EncodeToString(array[:])
 }
 
 func tGetRequestEql(t *testing.T, handler http.Handler, url string, status int, body string) {
