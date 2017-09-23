@@ -1,0 +1,8 @@
+#!/bin/bash
+
+GOOS=darwin GOARCH=amd64 go build -o spago_darwin_amd64
+GOOS=darwin GOARCH=386 go build -o spago_darwin_386
+GOOS=linux GOARCH=amd64 go build -o spago_linux_amd64
+GOOS=linux GOARCH=386 go build -o spago_linux_386
+GOOS=windows GOARCH=amd64 go build -o spago_windows_amd64.exe
+GOOS=windows GOARCH=386 go build -o spago_windows_386.exe
