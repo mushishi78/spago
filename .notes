@@ -1,8 +1,9 @@
-Write README
+Version and downloadable releases
+Travis CI?
 API port forwarding
 Performance testing
 Test POST and assets routes
 Remove unused test utils
 Command line flags PORT, API_PORT, BUILD_PATH
-Build with hash, uglify, and zip
+Build with concat, uglify, hash and zip
 Serve any html file with assets?
