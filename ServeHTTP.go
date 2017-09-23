@@ -10,22 +10,7 @@ import (
 	"strings"
 )
 
-type Server struct {
-	CWD string
-}
-
-func ServerCreate(cwd string) (*Server, error) {
-	serv := &Server{
-		CWD: cwd,
-	}
-	return serv, nil
-}
-
-func ServerClose(serv *Server) error {
-	return nil
-}
-
-func (serv *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+func (serv *server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if r.Method != "GET" {
 		http.NotFound(w, r)
 		return

@@ -5,11 +5,10 @@ import (
 	"testing"
 )
 
-func TestSpago_serves_index_html_with_deps(t *testing.T) {
+func TestServeHTTP_serves_index_html_with_deps(t *testing.T) {
 	cwd, close := tTempDir(t)
 	defer close()
-	serv := tServerCreate(t, cwd)
-	defer tServerClose(t, serv)
+	serv := &server{cwd}
 	tMkdir(t, filepath.Join(cwd, "cart"))
 	tMkdir(t, filepath.Join(cwd, "user"))
 	tAddFile(t, filepath.Join(cwd, "cart", "cart.css"), ".cart { border: 1px solid #666; }")
@@ -42,11 +41,10 @@ func TestSpago_serves_index_html_with_deps(t *testing.T) {
 `)
 }
 
-func TestSpago_fails_without_index_html(t *testing.T) {
+func TestServeHTTP_fails_without_index_html(t *testing.T) {
 	cwd, close := tTempDir(t)
 	defer close()
-	serv := tServerCreate(t, cwd)
-	defer tServerClose(t, serv)
+	serv := &server{cwd}
 	tMkdir(t, filepath.Join(cwd, "cart"))
 	tMkdir(t, filepath.Join(cwd, "user"))
 	tAddFile(t, filepath.Join(cwd, "cart", "cart.css"), ".cart { border: 1px solid #666; }")
@@ -56,11 +54,10 @@ func TestSpago_fails_without_index_html(t *testing.T) {
 	tGetRequestEql(t, serv, "/cart", 500, "failed to read index.html\n")
 }
 
-func TestSpago_fails_without_head_element(t *testing.T) {
+func TestServeHTTP_fails_without_head_element(t *testing.T) {
 	cwd, close := tTempDir(t)
 	defer close()
-	serv := tServerCreate(t, cwd)
-	defer tServerClose(t, serv)
+	serv := &server{cwd}
 	tMkdir(t, filepath.Join(cwd, "cart"))
 	tMkdir(t, filepath.Join(cwd, "user"))
 	tAddFile(t, filepath.Join(cwd, "cart", "cart.css"), ".cart { border: 1px solid #666; }")
@@ -77,11 +74,10 @@ func TestSpago_fails_without_head_element(t *testing.T) {
 	tGetRequestEql(t, serv, "/cart", 500, "index.html does not have <head> element\n")
 }
 
-func TestSpago_fails_without_body_element(t *testing.T) {
+func TestServeHTTP_fails_without_body_element(t *testing.T) {
 	cwd, close := tTempDir(t)
 	defer close()
-	serv := tServerCreate(t, cwd)
-	defer tServerClose(t, serv)
+	serv := &server{cwd}
 	tMkdir(t, filepath.Join(cwd, "cart"))
 	tMkdir(t, filepath.Join(cwd, "user"))
 	tAddFile(t, filepath.Join(cwd, "cart", "cart.css"), ".cart { border: 1px solid #666; }")

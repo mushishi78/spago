@@ -69,21 +69,6 @@ func tHash(str string) string {
 	return hex.EncodeToString(array[:])
 }
 
-func tServerCreate(t *testing.T, cwd string) *Server {
-	serv, err := ServerCreate(cwd)
-	if err != nil {
-		t.Fatalf("failed to create server\n%v", err)
-	}
-	return serv
-}
-
-func tServerClose(t *testing.T, serv *Server) {
-	err := ServerClose(serv)
-	if err != nil {
-		t.Fatalf("failed to close server\n%v", err)
-	}
-}
-
 func tGetRequestEql(t *testing.T, handler http.Handler, url string, status int, body string) {
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
