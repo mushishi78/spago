@@ -93,3 +93,15 @@ func TestServeHTTP_fails_without_body_element(t *testing.T) {
 `)
 	tGetRequestEql(t, serv, "/cart", 500, "index.html does not have <body> element\n")
 }
+
+func TestServeHTTP_serves_static_assets(t *testing.T) {
+	cwd, close := tTempDir(t)
+	defer close()
+	serv := &server{cwd}
+	tMkdir(t, filepath.Join(cwd, "cart"))
+	tMkdir(t, filepath.Join(cwd, "user"))
+	tAddFile(t, filepath.Join(cwd, "cart", "cart.css"), ".cart { border: 1px solid #666; }")
+	tAddFile(t, filepath.Join(cwd, "cart", "cart.js"), "window.cart = { total: 0 };")
+	tGetRequestEql(t, serv, "/cart/cart.css", 200, ".cart { border: 1px solid #666; }")
+	tGetRequestEql(t, serv, "/cart/cart.js", 200, "window.cart = { total: 0 };")
+}

@@ -16,11 +16,11 @@ func (serv *server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Serve static assests
 	if strings.HasSuffix(r.URL.Path, ".css") ||
 		strings.HasSuffix(r.URL.Path, ".js") ||
 		strings.HasSuffix(r.URL.Path, ".png") ||
-		strings.HasSuffix(r.URL.Path, ".ico") {
+		strings.HasSuffix(r.URL.Path, ".ico") ||
+		strings.HasSuffix(r.URL.Path, ".jpg") {
 
 		http.ServeFile(w, r, filepath.Join(serv.CWD, r.URL.Path))
 		return

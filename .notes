@@ -1,6 +1,3 @@
-Travis CI?
 API port forwarding
 Performance testing
-Test POST and assets routes
 Build with concat, uglify, hash and zip
-Serve any html file with assets?
