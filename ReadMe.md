@@ -13,6 +13,12 @@ that allow changes made in the browser to be persisted directly to disk.
 
 It's also fairly fast and responsive to changes.
 
+## API forwarding
+
+By default, all http requests under the `/api` route will be forwarded to a configurable `API_PORT`. This
+allows a backend server to be run side by side the `spago` dev server, whilst be considered the same domain
+as far as the browser is concerned.
+
 ## Install
 
 Download the release for your platform from the [release page](https://github.com/mushishi78/spago/releases).
@@ -31,6 +37,12 @@ spago -PORT=3000
 ```
 
 The `PORT` flag is used to set which port the dev server will listen on. The default is 8080.
+
+```
+spago -API_PORT=4444
+```
+
+Ths `API_PORT` flag is the port that all requests to `/api` will be fowarded to. The default is 3000.
 
 ## Build
 

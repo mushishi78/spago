@@ -11,6 +11,11 @@ import (
 )
 
 func (serv *server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	if strings.HasPrefix(r.URL.Path, "/api") {
+		serv.APIProxy.ServeHTTP(w, r)
+		return
+	}
+
 	if r.Method != "GET" {
 		http.NotFound(w, r)
 		return

@@ -1,14 +1,17 @@
 package main
 
 import (
+	"fmt"
+	"net/http"
 	"path/filepath"
+	"sync"
 	"testing"
 )
 
 func TestServeHTTP_serves_index_html_with_deps(t *testing.T) {
 	cwd, close := tTempDir(t)
 	defer close()
-	serv := &server{cwd}
+	serv := tServerCreate(t, cwd, 3000)
 	tMkdir(t, filepath.Join(cwd, "cart"))
 	tMkdir(t, filepath.Join(cwd, "user"))
 	tAddFile(t, filepath.Join(cwd, "cart", "cart.css"), ".cart { border: 1px solid #666; }")
@@ -44,7 +47,7 @@ func TestServeHTTP_serves_index_html_with_deps(t *testing.T) {
 func TestServeHTTP_fails_without_index_html(t *testing.T) {
 	cwd, close := tTempDir(t)
 	defer close()
-	serv := &server{cwd}
+	serv := tServerCreate(t, cwd, 3000)
 	tMkdir(t, filepath.Join(cwd, "cart"))
 	tMkdir(t, filepath.Join(cwd, "user"))
 	tAddFile(t, filepath.Join(cwd, "cart", "cart.css"), ".cart { border: 1px solid #666; }")
@@ -57,7 +60,7 @@ func TestServeHTTP_fails_without_index_html(t *testing.T) {
 func TestServeHTTP_fails_without_head_element(t *testing.T) {
 	cwd, close := tTempDir(t)
 	defer close()
-	serv := &server{cwd}
+	serv := tServerCreate(t, cwd, 3000)
 	tMkdir(t, filepath.Join(cwd, "cart"))
 	tMkdir(t, filepath.Join(cwd, "user"))
 	tAddFile(t, filepath.Join(cwd, "cart", "cart.css"), ".cart { border: 1px solid #666; }")
@@ -77,7 +80,7 @@ func TestServeHTTP_fails_without_head_element(t *testing.T) {
 func TestServeHTTP_fails_without_body_element(t *testing.T) {
 	cwd, close := tTempDir(t)
 	defer close()
-	serv := &server{cwd}
+	serv := tServerCreate(t, cwd, 3000)
 	tMkdir(t, filepath.Join(cwd, "cart"))
 	tMkdir(t, filepath.Join(cwd, "user"))
 	tAddFile(t, filepath.Join(cwd, "cart", "cart.css"), ".cart { border: 1px solid #666; }")
@@ -97,11 +100,36 @@ func TestServeHTTP_fails_without_body_element(t *testing.T) {
 func TestServeHTTP_serves_static_assets(t *testing.T) {
 	cwd, close := tTempDir(t)
 	defer close()
-	serv := &server{cwd}
+	serv := tServerCreate(t, cwd, 3000)
 	tMkdir(t, filepath.Join(cwd, "cart"))
 	tMkdir(t, filepath.Join(cwd, "user"))
 	tAddFile(t, filepath.Join(cwd, "cart", "cart.css"), ".cart { border: 1px solid #666; }")
 	tAddFile(t, filepath.Join(cwd, "cart", "cart.js"), "window.cart = { total: 0 };")
 	tGetRequestEql(t, serv, "/cart/cart.css", 200, ".cart { border: 1px solid #666; }")
 	tGetRequestEql(t, serv, "/cart/cart.js", 200, "window.cart = { total: 0 };")
+}
+
+type apiHandler struct{}
+
+func (ah *apiHandler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
+	fmt.Fprintln(w, "API server says hi")
+}
+
+func TestServeHTTP_forwards_API_calls(t *testing.T) {
+	apiServ := &http.Server{Addr: ":3000", Handler: &apiHandler{}}
+	go func() {
+		t.Fatal(apiServ.ListenAndServe())
+	}()
+
+	wg := &sync.WaitGroup{}
+	wg.Add(1)
+	go func() {
+		cwd, close := tTempDir(t)
+		defer close()
+		serv := tServerCreate(t, cwd, 3000)
+		tGetRequestEql(t, serv, "/api/hello", 200, "API server says hi\n")
+		apiServ.Close()
+		wg.Done()
+	}()
+	wg.Wait()
 }

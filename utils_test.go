@@ -24,6 +24,14 @@ func tTempDir(t *testing.T) (string, func()) {
 	return dir, close
 }
 
+func tServerCreate(t *testing.T, cwd string, apiPort int) *server {
+	serv, err := serverCreate(cwd, apiPort)
+	if err != nil {
+		t.Fatal(err)
+	}
+	return serv
+}
+
 func tMkdir(t *testing.T, dir string) {
 	err := os.Mkdir(dir, 0600)
 	if err != nil {
