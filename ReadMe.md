@@ -18,6 +18,20 @@ It's also fairly fast and responsive to changes.
 Download the release for your platform from the [release page](https://github.com/mushishi78/spago/releases).
 Put in a folder in your PATH and rename to `spago`.
 
+## Flags
+
+```
+spago -h
+```
+
+The `-h` flag will list the flag options available.
+
+```
+spago -PORT=3000
+```
+
+The `PORT` flag is used to set which port the dev server will listen on. The default is 8080.
+
 ## Build
 
 To build from source, you will need to [install go](https://golang.org/doc/install).

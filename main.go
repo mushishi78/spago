@@ -1,6 +1,7 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"log"
 	"net/http"
@@ -17,7 +18,10 @@ func main() {
 		log.Fatalf("cannot get current working directory: %v", err)
 	}
 
+	port := flag.Int("PORT", 8080, "the port that the dev server will listen on")
+	flag.Parse()
+
 	serv := &server{cwd}
-	fmt.Println("SPAGO! Listening on 127.0.0.1:8080")
-	log.Fatal(http.ListenAndServe(":8080", serv))
+	fmt.Printf("listening on http://localhost:%v\n", *port)
+	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%v", *port), serv))
 }
