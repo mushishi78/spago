@@ -63,41 +63,32 @@ func (serv *server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Read index file
-	var indexFile []string
-	{
-		htmlPath := filepath.Join(serv.CWD, "index.html")
+	htmlPath := filepath.Join(serv.CWD, "index.html")
 
-		htmlBytes, err := ioutil.ReadFile(htmlPath)
-		if err != nil {
-			http.Error(w, "failed to read index.html", 500)
-			log.Printf("failed to read index.html: %v", err)
-			return
-		}
+	htmlBytes, err := ioutil.ReadFile(htmlPath)
+	if err != nil {
+		http.Error(w, "failed to read index.html", 500)
+		log.Printf("failed to read index.html: %v", err)
+		return
+	}
 
-		html := string(htmlBytes)
-		cssInsertPoint := strings.Index(html, "</head>")
-		jsInsertPoint := strings.Index(html, "</body>")
+	html := string(htmlBytes)
+	cssInsertPoint := strings.Index(html, "</head>")
+	jsInsertPoint := strings.Index(html, "</body>")
 
-		if cssInsertPoint == -1 {
-			http.Error(w, "index.html does not have <head> element", 500)
-			return
-		}
-		if jsInsertPoint == -1 {
-			http.Error(w, "index.html does not have <body> element", 500)
-			return
-		}
-
-		indexFile = []string{
-			html[:cssInsertPoint],
-			html[cssInsertPoint:jsInsertPoint],
-			html[jsInsertPoint:],
-		}
+	if cssInsertPoint == -1 {
+		http.Error(w, "index.html does not have <head> element", 500)
+		return
+	}
+	if jsInsertPoint == -1 {
+		http.Error(w, "index.html does not have <body> element", 500)
+		return
 	}
 
 	w.WriteHeader(200)
-	fmt.Fprint(w, indexFile[0])
+	fmt.Fprint(w, html[:cssInsertPoint])
 	fmt.Fprint(w, strings.Join(linkElements, ""))
-	fmt.Fprint(w, indexFile[1])
+	fmt.Fprint(w, html[cssInsertPoint:jsInsertPoint])
 	fmt.Fprint(w, strings.Join(scriptElements, ""))
-	fmt.Fprint(w, indexFile[2])
+	fmt.Fprint(w, html[jsInsertPoint:])
 }
