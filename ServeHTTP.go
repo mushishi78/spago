@@ -5,7 +5,6 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
-	"os"
 	"path/filepath"
 	"strings"
 )
@@ -34,30 +33,20 @@ func (serv *server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	var linkElements = make([]string, 0)
 	var scriptElements = make([]string, 0)
 	{
-		err := filepath.Walk(serv.CWD, func(path string, info os.FileInfo, err error) error {
-			if err != nil {
-				return fmt.Errorf("file walk error: %v", err)
-			}
-
-			relPath := path[len(serv.CWD):]
-			relPath = strings.Replace(relPath, "\\", "/", -1)
-
+		err := unorderedWalk(serv.CWD, "", func(path string) {
 			if strings.HasSuffix(path, ".css") {
-				line := fmt.Sprintf("  <link href=\"%v\" rel=\"stylesheet\" type=\"text/css\">\n  ", relPath)
+				line := fmt.Sprintf("  <link href=\"/%v\" rel=\"stylesheet\" type=\"text/css\">\n  ", path)
 				linkElements = append(linkElements, line)
-				return nil
 			}
 
 			if strings.HasSuffix(path, ".js") {
-				line := fmt.Sprintf("  <script src=\"%v\"></script>\n  ", relPath)
+				line := fmt.Sprintf("  <script src=\"/%v\"></script>\n  ", path)
 				scriptElements = append(scriptElements, line)
-				return nil
 			}
-
-			return nil
 		})
 		if err != nil {
-			http.Error(w, err.Error(), 500)
+			http.Error(w, "failed scan for files", 500)
+			log.Printf("failed scan for files: %v", err)
 			return
 		}
 	}
