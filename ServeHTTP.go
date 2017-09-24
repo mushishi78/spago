@@ -51,7 +51,6 @@ func (serv *server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	// Read index file
 	htmlPath := filepath.Join(serv.CWD, "index.html")
 
 	htmlBytes, err := ioutil.ReadFile(htmlPath)
