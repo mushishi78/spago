@@ -117,19 +117,22 @@ func (ah *apiHandler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 
 func TestServeHTTP_forwards_API_calls(t *testing.T) {
 	apiServ := &http.Server{Addr: ":3000", Handler: &apiHandler{}}
-	go func() {
-		t.Fatal(apiServ.ListenAndServe())
-	}()
 
 	wg := &sync.WaitGroup{}
 	wg.Add(1)
+
+	go func() {
+		apiServ.ListenAndServe()
+		wg.Done()
+	}()
+
 	go func() {
 		cwd, close := tTempDir(t)
 		defer close()
 		serv := tServerCreate(t, cwd, 3000)
 		tGetRequestEql(t, serv, "/api/hello", 200, "API server says hi\n")
-		apiServ.Close()
-		wg.Done()
+		apiServ.Shutdown(nil)
 	}()
+
 	wg.Wait()
 }
