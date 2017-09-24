@@ -5,11 +5,19 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"os"
-	"testing"
+	"strings"
 )
 
-func tTempDir(t *testing.T) (string, func()) {
-	dir, err := ioutil.TempDir("", "spago-"+t.Name()+"-")
+type failable interface {
+	Name() string
+	Fatal(args ...interface{})
+	Fatalf(format string, args ...interface{})
+	Errorf(format string, args ...interface{})
+}
+
+func tTempDir(t failable) (string, func()) {
+	prefix := strings.Replace("spago-"+t.Name()+"-", "/", "-", -1)
+	dir, err := ioutil.TempDir("", prefix)
 	if err != nil {
 		t.Fatalf("failed to create a temp directory\n%v", err)
 	}
@@ -24,7 +32,7 @@ func tTempDir(t *testing.T) (string, func()) {
 	return dir, close
 }
 
-func tServerCreate(t *testing.T, cwd string, apiPort int) *server {
+func tServerCreate(t failable, cwd string, apiPort int) *server {
 	serv, err := serverCreate(cwd, apiPort)
 	if err != nil {
 		t.Fatal(err)
@@ -32,21 +40,21 @@ func tServerCreate(t *testing.T, cwd string, apiPort int) *server {
 	return serv
 }
 
-func tMkdir(t *testing.T, dir string) {
+func tMkdir(t failable, dir string) {
 	err := os.Mkdir(dir, 0600)
 	if err != nil {
 		t.Fatalf("failed to create dir\n%v", err)
 	}
 }
 
-func tAddFile(t *testing.T, filename string, content string) {
+func tAddFile(t failable, filename string, content string) {
 	err := ioutil.WriteFile(filename, []byte(content), 0600)
 	if err != nil {
 		t.Fatalf("failed to add file\n%v", err)
 	}
 }
 
-func tGetRequestEql(t *testing.T, handler http.Handler, url string, status int, body string) {
+func tGetRequestEql(t failable, handler http.Handler, url string, status int, body string) {
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
 		t.Fatalf("failed to create http request\n%v", err)

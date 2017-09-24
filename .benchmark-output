@@ -1,0 +1,6 @@
+$ go test -bench=. -run=^a
+BenchmarkServeHTTP_index_file/Small_Project-4                500           2640574 ns/op
+BenchmarkServeHTTP_index_file/Medium_Project-4               200          10034701 ns/op
+BenchmarkServeHTTP_index_file/Large_Project-4                 50          29548554 ns/op
+PASS
+ok      github.com/mushishi78/spago     11.907s
