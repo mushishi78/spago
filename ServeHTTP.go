@@ -22,6 +22,7 @@ func (serv *server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	if strings.HasSuffix(r.URL.Path, ".css") ||
 		strings.HasSuffix(r.URL.Path, ".js") ||
+		strings.HasSuffix(r.URL.Path, ".map") ||
 		strings.HasSuffix(r.URL.Path, ".png") ||
 		strings.HasSuffix(r.URL.Path, ".ico") ||
 		strings.HasSuffix(r.URL.Path, ".jpg") {
