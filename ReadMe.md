@@ -24,7 +24,15 @@ as far as the browser is concerned.
 Download the release for your platform from the [release page](https://github.com/mushishi78/spago/releases).
 Put in a folder in your PATH and rename to `spago`.
 
-## Flags
+## Usage
+
+```
+spago [flags] [path]
+```
+
+If a path is not provided, the current working directory will be used.
+
+### Flags
 
 ```
 spago -h
