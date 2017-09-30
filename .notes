@@ -1,1 +1,2 @@
 Build with concat, uglify, hash and zip
+Add ROOT flag and multiple asset paths args
