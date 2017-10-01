@@ -7,7 +7,7 @@ import (
 	"testing"
 )
 
-func BenchmarkServeHTTP_index_file(b *testing.B) {
+func Benchmark_server_index_file(b *testing.B) {
 	for _, tt := range []struct {
 		Name      string
 		RuneRange string

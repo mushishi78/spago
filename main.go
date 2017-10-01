@@ -5,16 +5,9 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"net/http/httputil"
-	"net/url"
 	"os"
 	"path/filepath"
 )
-
-type server struct {
-	CWD      string
-	APIProxy *httputil.ReverseProxy
-}
 
 func main() {
 	if len(os.Args) > 2 {
@@ -40,14 +33,4 @@ func main() {
 
 	fmt.Printf("listening on http://localhost:%v\n", *port)
 	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%v", *port), serv))
-}
-
-func serverCreate(cwd string, apiPort int) (*server, error) {
-	u, err := url.Parse(fmt.Sprintf("http://localhost:%v", apiPort))
-	if err != nil {
-		return nil, fmt.Errorf("could not create api proxy url: %v", err)
-	}
-
-	proxy := httputil.NewSingleHostReverseProxy(u)
-	return &server{cwd, proxy}, nil
 }

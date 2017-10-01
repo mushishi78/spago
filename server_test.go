@@ -8,7 +8,7 @@ import (
 	"testing"
 )
 
-func TestServeHTTP_serves_index_html_with_deps(t *testing.T) {
+func Test_server_serves_index_html_with_deps(t *testing.T) {
 	cwd, close := tTempDir(t)
 	defer close()
 	serv := tServerCreate(t, cwd, 3000)
@@ -44,7 +44,7 @@ func TestServeHTTP_serves_index_html_with_deps(t *testing.T) {
 `)
 }
 
-func TestServeHTTP_fails_without_index_html(t *testing.T) {
+func Test_server_fails_without_index_html(t *testing.T) {
 	cwd, close := tTempDir(t)
 	defer close()
 	serv := tServerCreate(t, cwd, 3000)
@@ -57,7 +57,7 @@ func TestServeHTTP_fails_without_index_html(t *testing.T) {
 	tGetRequestEql(t, serv, "/cart", 500, "failed to read index.html\n")
 }
 
-func TestServeHTTP_fails_without_head_element(t *testing.T) {
+func Test_server_fails_without_head_element(t *testing.T) {
 	cwd, close := tTempDir(t)
 	defer close()
 	serv := tServerCreate(t, cwd, 3000)
@@ -77,7 +77,7 @@ func TestServeHTTP_fails_without_head_element(t *testing.T) {
 	tGetRequestEql(t, serv, "/cart", 500, "index.html does not have <head> element\n")
 }
 
-func TestServeHTTP_fails_without_body_element(t *testing.T) {
+func Test_server_fails_without_body_element(t *testing.T) {
 	cwd, close := tTempDir(t)
 	defer close()
 	serv := tServerCreate(t, cwd, 3000)
@@ -97,7 +97,7 @@ func TestServeHTTP_fails_without_body_element(t *testing.T) {
 	tGetRequestEql(t, serv, "/cart", 500, "index.html does not have <body> element\n")
 }
 
-func TestServeHTTP_serves_static_assets(t *testing.T) {
+func Test_server_serves_static_assets(t *testing.T) {
 	cwd, close := tTempDir(t)
 	defer close()
 	serv := tServerCreate(t, cwd, 3000)
@@ -115,7 +115,7 @@ func (ah *apiHandler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	fmt.Fprintln(w, "API server says hi")
 }
 
-func TestServeHTTP_forwards_API_calls(t *testing.T) {
+func Test_server_forwards_API_calls(t *testing.T) {
 	apiServ := &http.Server{Addr: ":3000", Handler: &apiHandler{}}
 
 	wg := &sync.WaitGroup{}
