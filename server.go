@@ -26,6 +26,11 @@ func serverCreate(cwd string, apiPort int) (*server, error) {
 	return &server{cwd, proxy}, nil
 }
 
+func (serv *server) listenAndServe(port int) {
+	fmt.Printf("listening on http://localhost:%v\n", port)
+	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%v", port), serv))
+}
+
 func (serv *server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if strings.HasPrefix(r.URL.Path, "/api") {
 		serv.APIProxy.ServeHTTP(w, r)

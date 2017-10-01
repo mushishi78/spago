@@ -2,9 +2,7 @@ package main
 
 import (
 	"flag"
-	"fmt"
 	"log"
-	"net/http"
 	"os"
 	"path/filepath"
 )
@@ -31,6 +29,5 @@ func main() {
 		log.Fatal(err)
 	}
 
-	fmt.Printf("listening on http://localhost:%v\n", *port)
-	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%v", *port), serv))
+	serv.listenAndServe(*port)
 }
