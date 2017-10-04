@@ -17,23 +17,23 @@ func Benchmark_server_index_file(b *testing.B) {
 		{"Large Project", "abcdefg"},
 	} {
 		b.Run(tt.Name, func(b *testing.B) {
-			cwd, close := tTempDir(b)
+			rootDir, close := tTempDir(b)
 			defer close()
 
 			// Create nested project
 			for _, r1 := range tt.RuneRange {
-				tMkdir(b, filepath.Join(cwd, string(r1)))
+				tMkdir(b, filepath.Join(rootDir, string(r1)))
 
 				for _, r2 := range tt.RuneRange {
-					tMkdir(b, filepath.Join(cwd, string(r1), string(r2)))
+					tMkdir(b, filepath.Join(rootDir, string(r1), string(r2)))
 
 					for _, r3 := range tt.RuneRange {
-						tAddFile(b, filepath.Join(cwd, string(r1), string(r2), string(r3)+".css"), lorem)
-						tAddFile(b, filepath.Join(cwd, string(r1), string(r2), string(r3)+".js"), lorem)
+						tAddFile(b, filepath.Join(rootDir, string(r1), string(r2), string(r3)+".css"), lorem)
+						tAddFile(b, filepath.Join(rootDir, string(r1), string(r2), string(r3)+".js"), lorem)
 					}
 				}
 			}
-			tAddFile(b, filepath.Join(cwd, "index.html"), `<!DOCTYPE html>
+			tAddFile(b, filepath.Join(rootDir, "index.html"), `<!DOCTYPE html>
         <html>
         <head>
             <title>Example Project</title>
@@ -44,7 +44,7 @@ func Benchmark_server_index_file(b *testing.B) {
         </html>
         `)
 
-			serv := tServerCreate(b, cwd, 3000)
+			serv := tServerCreate(b, rootDir)
 			req, err := http.NewRequest("GET", "/test/route", nil)
 			if err != nil {
 				b.Fatalf("failed to create http request\n%v", err)

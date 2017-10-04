@@ -1,10 +1,12 @@
 package main
 
 import (
+	"encoding/json"
 	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
 	"os"
+	"path/filepath"
 	"strings"
 )
 
@@ -32,8 +34,8 @@ func tTempDir(t failable) (string, func()) {
 	return dir, close
 }
 
-func tServerCreate(t failable, cwd string, apiPort int) *server {
-	serv, err := serverCreate(cwd, apiPort)
+func tServerCreate(t failable, rootDir string) *server {
+	serv, err := serverCreate(rootDir)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -52,6 +54,14 @@ func tAddFile(t failable, filename string, content string) {
 	if err != nil {
 		t.Fatalf("failed to add file\n%v", err)
 	}
+}
+
+func tAddConfigFile(t failable, rootDir string, config Config) {
+	content, err := json.Marshal(config)
+	if err != nil {
+		t.Fatalf("failed to serialize config file\n%v", err)
+	}
+	tAddFile(t, filepath.Join(rootDir, "spago.json"), string(content))
 }
 
 func tGetRequestEql(t failable, handler http.Handler, url string, status int, body string) {

@@ -1,2 +1,6 @@
 Build with concat, uglify, hash and zip
-Add ROOT flag and multiple asset paths args
+Remove lorem
+Inline benchmark output
+Ignore .notes file
+Rename utils_test.go to t_test.go
+Remove log usages, DI to stop it printing in tests

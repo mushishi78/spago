@@ -15,42 +15,38 @@ It's also fairly fast and responsive to changes.
 
 ## API forwarding
 
-By default, all http requests under the `/api` route will be forwarded to a configurable `API_PORT`. This
-allows a backend server to be run side by side the `spago` dev server, whilst be considered the same domain
-as far as the browser is concerned.
+By default, all http requests under the `/api` route will be forwarded to
+`http://localhost:3000`. This allows a backend server to be run side by side
+the `spago` dev server, whilst be considered the same domain as far as the
+browser is concerned.
 
 ## Install
 
 Download the release for your platform from the [release page](https://github.com/mushishi78/spago/releases).
-Put in a folder in your PATH and rename to `spago`.
+Put in a folder in your PATH `spago`.
 
 ## Usage
 
 ```
-spago [flags] [path]
+spago [path]
 ```
 
 If a path is not provided, the current working directory will be used.
 
-### Flags
+## Config
+
+Spago will look for a `spago.json` file in the directory that it is run in.
+If no file if found a default configuration as follows will be used:
 
 ```
-spago -h
+{
+    "port": 8080,
+    "excludedPaths": ["node_modules"],
+    "staticFileExtensions": [".css", ".js", ".map", ".png", ".ico", ".jpg"],
+    "reverseProxyUrl": "http://localhost:3000",
+    "reverseProxyRoute": "/api"
+}
 ```
-
-The `-h` flag will list the flag options available.
-
-```
-spago -PORT=3000
-```
-
-The `PORT` flag is used to set which port the dev server will listen on. The default is 8080.
-
-```
-spago -API_PORT=4444
-```
-
-Ths `API_PORT` flag is the port that all requests to `/api` will be fowarded to. The default is 3000.
 
 ## Build
 

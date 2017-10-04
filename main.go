@@ -1,7 +1,6 @@
 package main
 
 import (
-	"flag"
 	"log"
 	"os"
 	"path/filepath"
@@ -20,14 +19,10 @@ func main() {
 		cwd = filepath.Join(cwd, os.Args[1])
 	}
 
-	port := flag.Int("PORT", 8080, "the port that the dev server will listen on")
-	apiPort := flag.Int("API_PORT", 3000, "the port that /api requests will be forwarded to")
-	flag.Parse()
-
-	serv, err := serverCreate(cwd, *apiPort)
+	serv, err := serverCreate(cwd)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	serv.listenAndServe(*port)
+	serv.listenAndServe()
 }
