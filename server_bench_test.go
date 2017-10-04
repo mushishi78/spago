@@ -28,8 +28,8 @@ func Benchmark_server_index_file(b *testing.B) {
 					tMkdir(b, filepath.Join(rootDir, string(r1), string(r2)))
 
 					for _, r3 := range tt.RuneRange {
-						tAddFile(b, filepath.Join(rootDir, string(r1), string(r2), string(r3)+".css"), lorem)
-						tAddFile(b, filepath.Join(rootDir, string(r1), string(r2), string(r3)+".js"), lorem)
+						tAddFile(b, filepath.Join(rootDir, string(r1), string(r2), string(r3)+".css"), "Lorem ipsum dolor sit amet")
+						tAddFile(b, filepath.Join(rootDir, string(r1), string(r2), string(r3)+".js"), "Lorem ipsum dolor sit amet")
 					}
 				}
 			}
