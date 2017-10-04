@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
-	"log"
 	"net/http"
 	"net/http/httputil"
 	"net/url"
@@ -20,9 +19,10 @@ type server struct {
 	StaticFileExtensions []string
 	ReverseProxyRoute    string
 	ReverseProxy         *httputil.ReverseProxy
+	Logf                 func(format string, v ...interface{})
 }
 
-func serverCreate(rootDir string) (*server, error) {
+func serverCreate(rootDir string, logf func(format string, v ...interface{})) (*server, error) {
 	// Create server with defaults
 	serv := &server{
 		RootDir:              rootDir,
@@ -30,6 +30,7 @@ func serverCreate(rootDir string) (*server, error) {
 		ExcludedPaths:        map[string]bool{"node_modules": true},
 		StaticFileExtensions: []string{".css", ".js", ".map", ".png", ".ico", ".jpg"},
 		ReverseProxyRoute:    "/api",
+		Logf:                 logf,
 	}
 	reverseProxyURL := "http://localhost:3000"
 
@@ -84,9 +85,9 @@ func serverCreate(rootDir string) (*server, error) {
 	return serv, nil
 }
 
-func (serv *server) listenAndServe() {
+func (serv *server) listenAndServe() error {
 	fmt.Printf("listening on http://localhost:%v\n", serv.Port)
-	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%v", serv.Port), serv))
+	return http.ListenAndServe(fmt.Sprintf(":%v", serv.Port), serv)
 }
 
 func (serv *server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
@@ -124,7 +125,7 @@ func (serv *server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		})
 		if err != nil {
 			http.Error(w, "failed scan for files", 500)
-			log.Printf("failed scan for files: %v", err)
+			serv.Logf("failed scan for files: %v", err)
 			return
 		}
 	}
@@ -134,7 +135,7 @@ func (serv *server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	htmlBytes, err := ioutil.ReadFile(htmlPath)
 	if err != nil {
 		http.Error(w, "failed to read index.html", 500)
-		log.Printf("failed to read index.html: %v", err)
+		serv.Logf("failed to read index.html: %v", err)
 		return
 	}
 

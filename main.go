@@ -13,16 +13,16 @@ func main() {
 
 	cwd, err := os.Getwd()
 	if err != nil {
-		log.Fatalf("cannot get current working directory: %v", err)
+		log.Fatalf("cannot get current working directory: %v\n", err)
 	}
 	if len(os.Args) == 2 {
 		cwd = filepath.Join(cwd, os.Args[1])
 	}
 
-	serv, err := serverCreate(cwd)
+	serv, err := serverCreate(cwd, log.Printf)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	serv.listenAndServe()
+	log.Fatal(serv.listenAndServe())
 }

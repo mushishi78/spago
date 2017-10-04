@@ -35,7 +35,8 @@ func tTempDir(t failable) (string, func()) {
 }
 
 func tServerCreate(t failable, rootDir string) *server {
-	serv, err := serverCreate(rootDir)
+	dummyLogf := func(format string, v ...interface{}) {}
+	serv, err := serverCreate(rootDir, dummyLogf)
 	if err != nil {
 		t.Fatal(err)
 	}
