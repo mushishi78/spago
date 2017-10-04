@@ -7,6 +7,15 @@ import (
 	"testing"
 )
 
+/*
+$ go test -bench=. -run=^a
+BenchmarkServeHTTP_index_file/Small_Project-4               2000            988036 ns/op
+BenchmarkServeHTTP_index_file/Medium_Project-4               300           3500050 ns/op
+BenchmarkServeHTTP_index_file/Large_Project-4                200           7031795 ns/op
+PASS
+ok      github.com/mushishi78/spago     10.590s
+*/
+
 func Benchmark_server_index_file(b *testing.B) {
 	for _, tt := range []struct {
 		Name      string
