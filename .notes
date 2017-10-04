@@ -1,6 +1,0 @@
-Build with concat, uglify, hash and zip
-Remove lorem
-Inline benchmark output
-Ignore .notes file
-Rename utils_test.go to t_test.go
-Remove log usages, DI to stop it printing in tests
